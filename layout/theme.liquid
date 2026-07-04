@@ -1,0 +1,137 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#3B443B">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {% render 'meta-tags' %}
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    {{ content_for_header }}
+
+    <style>
+      :root {
+        --color-olive: #3B443B;
+        --color-gold: #D4AF37;
+        --color-beige: #FDFBF7;
+        --color-charcoal: #1A1A1A;
+        --font-heading: 'Playfair Display', serif;
+        --font-body: 'Montserrat', sans-serif;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background-color: var(--color-beige);
+        color: var(--color-charcoal);
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      .font-serif { font-family: var(--font-heading); }
+
+      /* Accessibility: Skip to Content */
+      .skip-to-content {
+        position: absolute;
+        top: -100px;
+        left: 0;
+        background: var(--color-gold);
+        color: var(--color-charcoal);
+        padding: 1rem 2rem;
+        z-index: 9999;
+        transition: top 0.3s ease;
+        text-decoration: none;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.75rem;
+      }
+
+      .skip-to-content:focus {
+        top: 0;
+      }
+
+      /* Focus Ring Utility */
+      :focus-visible {
+        outline: 2px solid var(--color-gold);
+        outline-offset: 4px;
+      }
+
+      .visually-hidden {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        padding: 0 !important;
+        margin: -1px !important;
+        overflow: hidden !important;
+        clip: rect(0, 0, 0, 0) !important;
+        white-space: nowrap !important;
+        border: 0 !important;
+      }
+    </style>
+  </head>
+
+  <body class="gradient template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}">
+    <a class="skip-to-content" href="#MainContent">
+      {{ "accessibility.skip_to_text" | t | default: "Skip to main content" }}
+    </a>
+
+    <header role="banner" class="header-wrapper">
+      {% section 'header' %}
+    </header>
+
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    <footer role="contentinfo" class="footer-wrapper">
+      {% section 'footer' %}
+    </footer>
+
+    <ul hidden>
+      <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+      <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>
+    </ul>
+
+    <script>
+      window.shopUrl = '{{ request.origin }}';
+      window.routes = {
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}',
+        cart_url: '{{ routes.cart_url }}',
+        predictive_search_url: '{{ routes.predictive_search_url }}'
+      };
+
+      // Basic accessibility handler for focus management on navigation
+      document.addEventListener('DOMContentLoaded', () => {
+        const mainContent = document.getElementById('MainContent');
+        if (window.location.hash === '#MainContent' && mainContent) {
+          mainContent.focus();
+        }
+      });
+    </script>
+  </body>
+</html>
